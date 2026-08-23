@@ -1,7 +1,4 @@
 import {
-  Heading,
-  Text,
-  Button,
   Avatar,
   RevealFx,
   Column,
@@ -9,12 +6,17 @@ import {
   Row,
   Schema,
   Meta,
+  Heading,
+  Text,
   Line,
 } from "@once-ui-system/core";
-import { home, about, person, baseURL, routes } from "@/resources";
-import { Mailchimp } from "@/components";
-import { Projects } from "@/components/work/Projects";
-import { Posts } from "@/components/blog/Posts";
+import { home, about, person, baseURL } from "@/resources";
+import { RevealOnScroll } from "@/components/RevealOnScroll";
+import { AboutSection } from "@/components/sections/AboutSection";
+import { ProjectsSection } from "@/components/sections/ProjectsSection";
+import { PublicationsSection } from "@/components/sections/PublicationsSection";
+import { ScrollToHash } from "@/components/ScrollToHash";
+import { ScrollButton } from "@/components/ScrollButton";
 
 export async function generateMetadata() {
   return Meta.generate({
@@ -38,11 +40,15 @@ export default function Home() {
         image={"/images/og/home.jpg"}
         author={{
           name: person.name,
-          url: `${baseURL}${about.path}`,
+          url: baseURL,
           image: `${baseURL}${person.avatar}`,
         }}
       />
-      <Column fillWidth horizontal="center" gap="m">
+      {/* Lets /#projects-style links from the project pages land on the right section. */}
+      <ScrollToHash />
+
+      {/* Hero — reveals on load, one element after the next. */}
+      <Column fillWidth horizontal="center" gap="m" paddingBottom="xl">
         <Column maxWidth="s" horizontal="center" align="center">
           {home.featured.display && (
             <RevealFx
@@ -76,15 +82,7 @@ export default function Home() {
             </Text>
           </RevealFx>
           <RevealFx paddingTop="12" delay={0.4} horizontal="center" paddingLeft="12">
-            <Button
-              id="about"
-              data-border="rounded"
-              href={about.path}
-              variant="secondary"
-              size="m"
-              weight="default"
-              arrowIcon
-            >
+            <ScrollButton sectionId="about">
               <Row gap="8" vertical="center" paddingRight="4">
                 {about.avatar.display && (
                   <Avatar
@@ -94,37 +92,36 @@ export default function Home() {
                     size="m"
                   />
                 )}
-                {about.title}
+                {about.label}
               </Row>
-            </Button>
+            </ScrollButton>
           </RevealFx>
         </Column>
       </Column>
-      <RevealFx translateY="16" delay={0.6}>
-        <Projects range={[1, 1]} />
-      </RevealFx>
-      {routes["/blog"] && (
-        <Column fillWidth gap="24" marginBottom="l">
-          <Row fillWidth paddingRight="64">
-            <Line maxWidth={48} />
+
+      {/* Sections below the fold reveal as they scroll into view. */}
+      <RevealOnScroll>
+        <AboutSection />
+      </RevealOnScroll>
+
+      <Row fillWidth horizontal="center" paddingY="l">
+        <Line maxWidth={48} background="neutral-alpha-medium" />
+      </Row>
+
+      <RevealOnScroll>
+        <ProjectsSection />
+      </RevealOnScroll>
+
+      {about.publications.display && (
+        <>
+          <Row fillWidth horizontal="center" paddingY="l">
+            <Line maxWidth={48} background="neutral-alpha-medium" />
           </Row>
-          <Row fillWidth gap="24" marginTop="40" s={{ direction: "column" }}>
-            <Row flex={1} paddingLeft="l" paddingTop="24">
-              <Heading as="h2" variant="display-strong-xs" wrap="balance">
-                Latest from the blog
-              </Heading>
-            </Row>
-            <Row flex={3} paddingX="20">
-              <Posts range={[1, 2]} columns="2" />
-            </Row>
-          </Row>
-          <Row fillWidth paddingLeft="64" horizontal="end">
-            <Line maxWidth={48} />
-          </Row>
-        </Column>
+          <RevealOnScroll>
+            <PublicationsSection />
+          </RevealOnScroll>
+        </>
       )}
-      <Projects range={[2]} />
-      <Mailchimp />
     </Column>
   );
 }

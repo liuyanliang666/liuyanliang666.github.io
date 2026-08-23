@@ -1,23 +1,17 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { scrollToSection } from "./scrollToSection";
 
+/**
+ * Honours a `#section` hash on load, so links like /#projects from a project
+ * page land in the right place.
+ */
 export function ScrollToHash() {
-  const router = useRouter();
-
   useEffect(() => {
-    // Get the hash from the URL
-    const hash = window.location.hash;
-    if (hash) {
-      // Remove the '#' symbol
-      const id = hash.replace("#", "");
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  }, [router]);
+    const id = window.location.hash.replace("#", "");
+    if (id) scrollToSection(id);
+  }, []);
 
   return null;
 }

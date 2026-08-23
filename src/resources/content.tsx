@@ -63,10 +63,6 @@ const about: About = {
   label: "About",
   title: `About – ${person.name}`,
   description: `Meet ${person.name}, ${person.role}`,
-  tableOfContent: {
-    display: true,
-    subItems: false,
-  },
   avatar: {
     display: false, // flip to true once person.avatar points at a real image
   },
@@ -155,7 +151,7 @@ const blog: Blog = {
 
 const work: Work = {
   path: "/work",
-  label: "Work",
+  label: "Projects",
   title: `Projects – ${person.name}`,
   description: `Open-source projects by ${person.name}`,
   // Create new project pages by adding a .mdx file to src/app/work/projects

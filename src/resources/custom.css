@@ -67,3 +67,9 @@
   --scheme-neutral-600-50: rgba(137,152,159,0.5);
   /*
 }*/
+/* Anchor targets sit under a sticky header — keep their headings clear of it. */
+#about,
+#projects,
+#publications {
+  scroll-margin-top: 6rem;
+}

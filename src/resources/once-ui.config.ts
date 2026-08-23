@@ -16,9 +16,10 @@ import { home, person, social } from "./content";
 // IMPORTANT: Replace with your own domain address - it's used for SEO in meta tags and schema
 const baseURL: string = "https://liuyanliang666.github.io";
 
+// The site is a single page: "/" carries the about, projects and publications
+// sections. "/work" stays on so the per-project pages under /work/<slug> resolve.
 const routes: RoutesConfig = {
   "/": true,
-  "/about": true,
   "/work": true,
   "/blog": false,
   "/gallery": false,

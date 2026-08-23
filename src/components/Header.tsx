@@ -1,11 +1,13 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Fade, Flex, Line, Row, ToggleButton } from "@once-ui-system/core";
 
-import { routes, display, person, about, blog, work, gallery } from "@/resources";
+import { display, person, about, work } from "@/resources";
+import type { IconName } from "@/resources/icons";
+import { scrollToSection } from "./scrollToSection";
 import { ThemeToggle } from "./ThemeToggle";
 import styles from "./Header.module.scss";
 
@@ -42,8 +44,67 @@ const TimeDisplay: React.FC<TimeDisplayProps> = ({ timeZone, locale = "en-GB" })
 
 export default TimeDisplay;
 
+// The site is one page, so nav items are anchors into it rather than routes.
+// Order here must match the order the sections appear in app/page.tsx.
+const sections: Array<{ id: string; label: string; icon: IconName }> = [
+  { id: "about", label: about.label, icon: "person" },
+  { id: "projects", label: work.label, icon: "grid" },
+  ...(about.publications.display
+    ? [{ id: "publications", label: about.publications.title, icon: "document" as IconName }]
+    : []),
+];
+
+/**
+ * The id of the last section whose top has scrolled under the header, or null
+ * while the hero is still in frame. Only runs on the single page itself.
+ */
+function useActiveSection(enabled: boolean) {
+  const [active, setActive] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!enabled) {
+      setActive(null);
+      return;
+    }
+
+    // Called straight from the scroll event rather than throttled through
+    // requestAnimationFrame: three rect reads are cheap, and rAF is paused in
+    // backgrounded tabs, which would freeze the highlight.
+    const update = () => {
+      // A line just below the sticky header; the last section above it wins.
+      const line = 140;
+      let current: string | null = null;
+      for (const section of sections) {
+        const element = document.getElementById(section.id);
+        if (element && element.getBoundingClientRect().top <= line) {
+          current = section.id;
+        }
+      }
+      setActive(current);
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [enabled]);
+
+  return active;
+}
+
 export const Header = () => {
   const pathname = usePathname() ?? "";
+  // trailingSlash is on, so "/" arrives as "/" but be lenient anyway.
+  const onSinglePage = pathname === "/" || pathname === "";
+  const activeSection = useActiveSection(onSinglePage);
+
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   return (
     <>
@@ -86,86 +147,45 @@ export const Header = () => {
             zIndex={1}
           >
             <Row gap="4" vertical="center" textVariant="body-default-s" suppressHydrationWarning>
-              {routes["/"] && (
-                <ToggleButton prefixIcon="home" href="/" selected={pathname === "/"} />
+              {onSinglePage ? (
+                <ToggleButton
+                  prefixIcon="home"
+                  onClick={scrollToTop}
+                  selected={activeSection === null}
+                />
+              ) : (
+                <ToggleButton prefixIcon="home" href="/" selected={false} />
               )}
               <Line background="neutral-alpha-medium" vert maxHeight="24" />
-              {routes["/about"] && (
-                <>
-                  <Row s={{ hide: true }}>
-                    <ToggleButton
-                      prefixIcon="person"
-                      href="/about"
-                      label={about.label}
-                      selected={pathname === "/about"}
-                    />
+              {sections.map((section) => {
+                const selected = onSinglePage && activeSection === section.id;
+                // On the page itself this is a scroll, not a navigation. From a
+                // project page it's a real link home, and ScrollToHash takes
+                // over once the page loads.
+                const navProps = onSinglePage
+                  ? { onClick: () => scrollToSection(section.id) }
+                  : { href: `/#${section.id}` };
+
+                return (
+                  <Row key={section.id}>
+                    <Row s={{ hide: true }}>
+                      <ToggleButton
+                        prefixIcon={section.icon}
+                        label={section.label}
+                        selected={selected}
+                        {...navProps}
+                      />
+                    </Row>
+                    <Row hide s={{ hide: false }}>
+                      <ToggleButton
+                        prefixIcon={section.icon}
+                        selected={selected}
+                        {...navProps}
+                      />
+                    </Row>
                   </Row>
-                  <Row hide s={{ hide: false }}>
-                    <ToggleButton
-                      prefixIcon="person"
-                      href="/about"
-                      selected={pathname === "/about"}
-                    />
-                  </Row>
-                </>
-              )}
-              {routes["/work"] && (
-                <>
-                  <Row s={{ hide: true }}>
-                    <ToggleButton
-                      prefixIcon="grid"
-                      href="/work"
-                      label={work.label}
-                      selected={pathname.startsWith("/work")}
-                    />
-                  </Row>
-                  <Row hide s={{ hide: false }}>
-                    <ToggleButton
-                      prefixIcon="grid"
-                      href="/work"
-                      selected={pathname.startsWith("/work")}
-                    />
-                  </Row>
-                </>
-              )}
-              {routes["/blog"] && (
-                <>
-                  <Row s={{ hide: true }}>
-                    <ToggleButton
-                      prefixIcon="book"
-                      href="/blog"
-                      label={blog.label}
-                      selected={pathname.startsWith("/blog")}
-                    />
-                  </Row>
-                  <Row hide s={{ hide: false }}>
-                    <ToggleButton
-                      prefixIcon="book"
-                      href="/blog"
-                      selected={pathname.startsWith("/blog")}
-                    />
-                  </Row>
-                </>
-              )}
-              {routes["/gallery"] && (
-                <>
-                  <Row s={{ hide: true }}>
-                    <ToggleButton
-                      prefixIcon="gallery"
-                      href="/gallery"
-                      label={gallery.label}
-                      selected={pathname.startsWith("/gallery")}
-                    />
-                  </Row>
-                  <Row hide s={{ hide: false }}>
-                    <ToggleButton
-                      prefixIcon="gallery"
-                      href="/gallery"
-                      selected={pathname.startsWith("/gallery")}
-                    />
-                  </Row>
-                </>
-              )}
+                );
+              })}
               {display.themeSwitcher && (
                 <>
                   <Line background="neutral-alpha-medium" vert maxHeight="24" />
