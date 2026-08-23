@@ -1,5 +1,4 @@
 import {
-  Avatar,
   RevealFx,
   Column,
   Badge,
@@ -16,7 +15,6 @@ import { AboutSection } from "@/components/sections/AboutSection";
 import { ProjectsSection } from "@/components/sections/ProjectsSection";
 import { PublicationsSection } from "@/components/sections/PublicationsSection";
 import { ScrollToHash } from "@/components/ScrollToHash";
-import { ScrollButton } from "@/components/ScrollButton";
 
 export async function generateMetadata() {
   return Meta.generate({
@@ -80,21 +78,6 @@ export default function Home() {
             <Text wrap="balance" onBackground="neutral-weak" variant="heading-default-xl">
               {home.subline}
             </Text>
-          </RevealFx>
-          <RevealFx paddingTop="12" delay={0.4} horizontal="center" paddingLeft="12">
-            <ScrollButton sectionId="about">
-              <Row gap="8" vertical="center" paddingRight="4">
-                {about.avatar.display && (
-                  <Avatar
-                    marginRight="8"
-                    style={{ marginLeft: "-0.75rem" }}
-                    src={person.avatar}
-                    size="m"
-                  />
-                )}
-                {about.label}
-              </Row>
-            </ScrollButton>
           </RevealFx>
         </Column>
       </Column>
