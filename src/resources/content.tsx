@@ -1,13 +1,11 @@
 import { About, Blog, Gallery, Home, Newsletter, Person, Social, Work } from "@/types";
 
 const person: Person = {
-  // TODO: replace with the name you actually want on the site — this is just
-  // your GitHub display name as a stand-in.
-  firstName: "ARS_LYL",
-  lastName: "",
-  name: `ARS_LYL`,
+  firstName: "Yanliang",
+  lastName: "Liu",
+  name: `Yanliang Liu`,
   role: "Computer Science Student",
-  avatar: "", // TODO: drop a photo at public/images/avatar.jpg and set this to "/images/avatar.jpg"
+  avatar: "/images/avatar.jpg",
   email: "liuyanliang369@gmail.com",
   location: "Asia/Shanghai", // IANA time zone identifier
   languages: ["Chinese", "English"], // optional: leave empty to hide the language tags
@@ -64,7 +62,7 @@ const about: About = {
   title: `About – ${person.name}`,
   description: `Meet ${person.name}, ${person.role}`,
   avatar: {
-    display: false, // flip to true once person.avatar points at a real image
+    display: true,
   },
   calendar: {
     display: false,
