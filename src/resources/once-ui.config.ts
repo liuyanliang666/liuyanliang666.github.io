@@ -105,7 +105,7 @@ const effects: EffectsConfig = {
     cursor: true,
     x: 50,
     y: 0,
-    radius: 40,
+    radius: 25,
   },
   gradient: {
     display: false,

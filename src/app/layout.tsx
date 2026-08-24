@@ -13,7 +13,7 @@ import {
   RevealFx,
   SpacingToken,
 } from "@once-ui-system/core";
-import { Footer, Header, RouteGuard, Providers } from "@/components";
+import { Footer, Header, RouteGuard, Providers, CursorSpotlight } from "@/components";
 import { baseURL, effects, fonts, style, dataStyle, home, person } from "@/resources";
 
 export async function generateMetadata() {
@@ -114,46 +114,47 @@ export default async function RootLayout({
           horizontal="center"
         >
           <RevealFx fill position="absolute">
-            <Background
-              mask={{
-                x: effects.mask.x,
-                y: effects.mask.y,
-                radius: effects.mask.radius,
-                cursor: effects.mask.cursor,
-              }}
-              gradient={{
-                display: effects.gradient.display,
-                opacity: effects.gradient.opacity as Opacity,
-                x: effects.gradient.x,
-                y: effects.gradient.y,
-                width: effects.gradient.width,
-                height: effects.gradient.height,
-                tilt: effects.gradient.tilt,
-                colorStart: effects.gradient.colorStart,
-                colorEnd: effects.gradient.colorEnd,
-              }}
-              dots={{
-                display: effects.dots.display,
-                opacity: effects.dots.opacity as Opacity,
-                size: effects.dots.size as SpacingToken,
-                color: effects.dots.color,
-              }}
-              grid={{
-                display: effects.grid.display,
-                opacity: effects.grid.opacity as Opacity,
-                color: effects.grid.color,
-                width: effects.grid.width,
-                height: effects.grid.height,
-              }}
-              lines={{
-                display: effects.lines.display,
-                opacity: effects.lines.opacity as Opacity,
-                size: effects.lines.size as SpacingToken,
-                thickness: effects.lines.thickness,
-                angle: effects.lines.angle,
-                color: effects.lines.color,
-              }}
-            />
+            <CursorSpotlight
+              cursor={effects.mask.cursor}
+              radius={effects.mask.radius}
+              x={effects.mask.x}
+              y={effects.mask.y}
+            >
+              <Background
+                gradient={{
+                  display: effects.gradient.display,
+                  opacity: effects.gradient.opacity as Opacity,
+                  x: effects.gradient.x,
+                  y: effects.gradient.y,
+                  width: effects.gradient.width,
+                  height: effects.gradient.height,
+                  tilt: effects.gradient.tilt,
+                  colorStart: effects.gradient.colorStart,
+                  colorEnd: effects.gradient.colorEnd,
+                }}
+                dots={{
+                  display: effects.dots.display,
+                  opacity: effects.dots.opacity as Opacity,
+                  size: effects.dots.size as SpacingToken,
+                  color: effects.dots.color,
+                }}
+                grid={{
+                  display: effects.grid.display,
+                  opacity: effects.grid.opacity as Opacity,
+                  color: effects.grid.color,
+                  width: effects.grid.width,
+                  height: effects.grid.height,
+                }}
+                lines={{
+                  display: effects.lines.display,
+                  opacity: effects.lines.opacity as Opacity,
+                  size: effects.lines.size as SpacingToken,
+                  thickness: effects.lines.thickness,
+                  angle: effects.lines.angle,
+                  color: effects.lines.color,
+                }}
+              />
+            </CursorSpotlight>
           </RevealFx>
           <Flex fillWidth minHeight="16" s={{ hide: true }} />
           <Header />
