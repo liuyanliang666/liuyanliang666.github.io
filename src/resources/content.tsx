@@ -42,17 +42,15 @@ const home: Home = {
   label: "Home",
   title: `${person.name}'s Portfolio`,
   description: `Open-source projects and research by ${person.name}`,
-  headline: <>Building things, and writing about them</>,
+  headline: <>Building what I want to understand.</>,
   featured: {
     display: false,
     title: <>Featured work</>,
     href: "/work",
   },
   subline: (
-    <>
-      I'm {person.firstName}, a computer science student. I build open-source projects
-      <br /> and work on research I care about.
-    </>
+    <>I'm a computer science student exploring interesting questions through research,
+      <br /> experiments, and code.</>
   ),
 };
 
