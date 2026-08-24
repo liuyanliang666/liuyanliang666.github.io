@@ -8,7 +8,7 @@ const person: Person = {
   avatar: "/images/avatar.jpg",
   email: "liuyanliang369@gmail.com",
   location: "Asia/Shanghai", // IANA time zone identifier
-  languages: ["Chinese", "English"], // optional: leave empty to hide the language tags
+  languages: [], // optional: leave empty to hide the language tags
   locale: "en", // BCP 47 language tag for the HTML lang attribute
 };
 
