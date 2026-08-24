@@ -105,7 +105,7 @@ const effects: EffectsConfig = {
     cursor: true,
     x: 50,
     y: 0,
-    radius: 100,
+    radius: 40,
   },
   gradient: {
     display: false,
@@ -120,7 +120,7 @@ const effects: EffectsConfig = {
   },
   dots: {
     display: true,
-    opacity: 40,
+    opacity: 70,
     size: "2",
     color: "brand-background-strong",
   },
