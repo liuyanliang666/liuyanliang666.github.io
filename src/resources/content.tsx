@@ -49,8 +49,11 @@ const home: Home = {
     href: "/work",
   },
   subline: (
-    <>I'm a computer science student exploring interesting questions through research,
-      <br /> experiments, and code.</>
+    <>
+      Hi, I'm Yanliang Liu. I'm an undergraduate at East China Normal University's School of
+      Computer Science and Technology, building things, running experiments, and seeing where
+      interesting ideas lead.
+    </>
   ),
 };
 
