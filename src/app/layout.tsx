@@ -10,7 +10,6 @@ import {
   Flex,
   Meta,
   Opacity,
-  RevealFx,
   SpacingToken,
 } from "@once-ui-system/core";
 import { Footer, Header, RouteGuard, Providers, CursorSpotlight } from "@/components";
@@ -113,49 +112,54 @@ export default async function RootLayout({
           padding="0"
           horizontal="center"
         >
-          <RevealFx fill position="absolute">
-            <CursorSpotlight
-              cursor={effects.mask.cursor}
-              radius={effects.mask.radius}
-              x={effects.mask.x}
-              y={effects.mask.y}
-            >
-              <Background
-                gradient={{
-                  display: effects.gradient.display,
-                  opacity: effects.gradient.opacity as Opacity,
-                  x: effects.gradient.x,
-                  y: effects.gradient.y,
-                  width: effects.gradient.width,
-                  height: effects.gradient.height,
-                  tilt: effects.gradient.tilt,
-                  colorStart: effects.gradient.colorStart,
-                  colorEnd: effects.gradient.colorEnd,
-                }}
-                dots={{
-                  display: effects.dots.display,
-                  opacity: effects.dots.opacity as Opacity,
-                  size: effects.dots.size as SpacingToken,
-                  color: effects.dots.color,
-                }}
-                grid={{
-                  display: effects.grid.display,
-                  opacity: effects.grid.opacity as Opacity,
-                  color: effects.grid.color,
-                  width: effects.grid.width,
-                  height: effects.grid.height,
-                }}
-                lines={{
-                  display: effects.lines.display,
-                  opacity: effects.lines.opacity as Opacity,
-                  size: effects.lines.size as SpacingToken,
-                  thickness: effects.lines.thickness,
-                  angle: effects.lines.angle,
-                  color: effects.lines.color,
-                }}
-              />
-            </CursorSpotlight>
-          </RevealFx>
+          {/*
+            Not wrapped in a RevealFx (as it was previously): CursorSpotlight
+            positions itself fixed to the viewport, and RevealFx's entrance
+            animation leaves a permanent transform/filter on itself that
+            would become the containing block for a fixed descendant,
+            trapping it the same way absolute positioning did.
+          */}
+          <CursorSpotlight
+            cursor={effects.mask.cursor}
+            radius={effects.mask.radius}
+            x={effects.mask.x}
+            y={effects.mask.y}
+          >
+            <Background
+              gradient={{
+                display: effects.gradient.display,
+                opacity: effects.gradient.opacity as Opacity,
+                x: effects.gradient.x,
+                y: effects.gradient.y,
+                width: effects.gradient.width,
+                height: effects.gradient.height,
+                tilt: effects.gradient.tilt,
+                colorStart: effects.gradient.colorStart,
+                colorEnd: effects.gradient.colorEnd,
+              }}
+              dots={{
+                display: effects.dots.display,
+                opacity: effects.dots.opacity as Opacity,
+                size: effects.dots.size as SpacingToken,
+                color: effects.dots.color,
+              }}
+              grid={{
+                display: effects.grid.display,
+                opacity: effects.grid.opacity as Opacity,
+                color: effects.grid.color,
+                width: effects.grid.width,
+                height: effects.grid.height,
+              }}
+              lines={{
+                display: effects.lines.display,
+                opacity: effects.lines.opacity as Opacity,
+                size: effects.lines.size as SpacingToken,
+                thickness: effects.lines.thickness,
+                angle: effects.lines.angle,
+                color: effects.lines.color,
+              }}
+            />
+          </CursorSpotlight>
           <Flex fillWidth minHeight="16" s={{ hide: true }} />
           <Header />
           <Flex zIndex={0} fillWidth padding="l" horizontal="center" flex={1}>

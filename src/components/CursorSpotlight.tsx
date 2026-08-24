@@ -24,18 +24,20 @@ export function CursorSpotlight({ cursor = false, radius, x = 50, y = 0, childre
     if (!el || !cursor) return;
 
     const rect = el.getBoundingClientRect();
-    const pos = { x: (rect.width * x) / 100, y: (rect.height * y) / 100 };
+    const client = { x: rect.left + (rect.width * x) / 100, y: rect.top + (rect.height * y) / 100 };
 
     const handleMove = (event: MouseEvent) => {
-      const bounds = el.getBoundingClientRect();
-      pos.x = event.clientX - bounds.left;
-      pos.y = event.clientY - bounds.top;
+      client.x = event.clientX;
+      client.y = event.clientY;
     };
     document.addEventListener("mousemove", handleMove, { passive: true });
 
+    // el is fixed to the viewport, so its box never shifts on scroll — bounds
+    // are re-read each frame only to stay correct across resizes, not scroll.
     let frame = requestAnimationFrame(function tick() {
-      el.style.setProperty("--spotlight-x", `${pos.x}px`);
-      el.style.setProperty("--spotlight-y", `${pos.y}px`);
+      const bounds = el.getBoundingClientRect();
+      el.style.setProperty("--spotlight-x", `${client.x - bounds.left}px`);
+      el.style.setProperty("--spotlight-y", `${client.y - bounds.top}px`);
       frame = requestAnimationFrame(tick);
     });
 
@@ -48,6 +50,7 @@ export function CursorSpotlight({ cursor = false, radius, x = 50, y = 0, childre
   return (
     <Flex
       ref={ref}
+      position="fixed"
       fill
       top="0"
       left="0"
