@@ -57,6 +57,42 @@ const home: Home = {
   ),
 };
 
+// Cycled in the hero as a typewriter, in place of the static headline/subline above.
+const heroQuotes: Array<{ text: string; author: string }> = [
+  {
+    text: "To predict the next token well, you have to understand the underlying reality that generated it.",
+    author: "Ilya Sutskever",
+  },
+  {
+    text: "The bitter lesson is that general methods that leverage computation are ultimately the most effective.",
+    author: "Rich Sutton",
+  },
+  {
+    text: "First solve intelligence, then use that to solve everything else.",
+    author: "Demis Hassabis",
+  },
+  {
+    text: "The world is its own best model.",
+    author: "Rodney Brooks",
+  },
+  {
+    text: "These systems do not just predict the next word; they build internal representations of the world.",
+    author: "Geoffrey Hinton",
+  },
+  {
+    text: "Gradient descent can write code better than you.",
+    author: "Andrej Karpathy",
+  },
+  {
+    text: "Text is a low-dimensional projection of the real world.",
+    author: "Ilya Sutskever",
+  },
+  {
+    text: "We can only see a short distance ahead, but we can see plenty there that needs to be done.",
+    author: "Alan Turing",
+  },
+];
+
 const about: About = {
   path: "/about",
   label: "About",
@@ -166,4 +202,4 @@ const gallery: Gallery = {
   images: [],
 };
 
-export { person, social, newsletter, home, about, blog, work, gallery };
+export { person, social, newsletter, home, about, blog, work, gallery, heroQuotes };
