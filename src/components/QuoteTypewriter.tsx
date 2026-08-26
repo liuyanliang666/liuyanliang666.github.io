@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Playfair_Display } from "next/font/google";
+import { Cormorant_Garamond } from "next/font/google";
 import { Column, Heading, RevealFx, Text } from "@once-ui-system/core";
 import styles from "./QuoteTypewriter.module.scss";
 
 // A characterful serif for the quote, set apart from the site's sans-serif body copy.
-const quoteFont = Playfair_Display({
+const quoteFont = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["500", "600"],
   style: ["italic"],
@@ -21,24 +21,32 @@ const DELETE_MS = 26;
 const HOLD_MS = 2600;
 const PAUSE_MS = 500;
 const REDUCED_MOTION_HOLD_MS = 4200;
-// A quote that still wouldn't fit one line at this size is dropped from the
-// rotation instead of being shrunk further or allowed to wrap.
-const MIN_FONT_SIZE_PX = 12;
-const MIN_AUTHOR_FONT_SIZE_PX = 11;
+// Long quotes are allowed to wrap up to this many lines instead of shrinking
+// down to fit on one.
+const MAX_LINES = 2;
+// The reserved height is one line taller than MAX_LINES: as a quote types out
+// character by character, text-wrap:balance can rebalance a partial line into
+// one more line than the finished quote ultimately needs before settling back
+// down — this buffer absorbs that transient so the sections below never shift.
+const RESERVED_LINES = MAX_LINES + 1;
+const LINE_HEIGHT_EM = 1.1;
+const MIN_FONT_SIZE_PX = 16;
+const MIN_AUTHOR_FONT_SIZE_PX = 17;
 // Leaves a little breathing room so rounding/font-metric differences between
-// the measuring clone and the real heading can't tip a quote onto a second line.
+// the measuring clone and the real heading can't tip a quote onto an extra line.
 const FIT_SAFETY_MARGIN = 0.97;
 
 interface QuoteTypewriterProps {
   quotes: Quote[];
 }
 
-// Cycles through the quotes that fit on one line forever, typing each one out
-// letter by letter and deleting it before moving to the next. Every quote
-// shares one font size — sized so the widest of them still fits a single line
-// — so the type looks consistent and the hero's height never changes.
-// Respects prefers-reduced-motion by swapping quotes with a plain crossfade
-// instead of animating each keystroke.
+// Cycles through `quotes` forever, typing each one out letter by letter and
+// deleting it before moving to the next. Every quote shares one font size —
+// sized so the widest of them still fits within MAX_LINES lines — and the
+// heading reserves exactly that much height, so the hero's height never
+// changes and nothing below it shifts as quotes cycle through. Respects
+// prefers-reduced-motion by swapping quotes with a plain crossfade instead of
+// animating each keystroke.
 export function QuoteTypewriter({ quotes }: QuoteTypewriterProps) {
   const [sizedQuotes, setSizedQuotes] = useState<SizedQuote[]>(
     quotes.map((quote) => ({ ...quote, fontSize: 0, authorFontSize: 0 })),
@@ -69,30 +77,42 @@ export function QuoteTypewriter({ quotes }: QuoteTypewriterProps) {
       const clone = heading.cloneNode(false) as HTMLElement;
       clone.style.position = "absolute";
       clone.style.visibility = "hidden";
-      clone.style.whiteSpace = "nowrap";
-      clone.style.fontSize = `${baseFontSize}px`;
+      clone.style.minHeight = "0";
+      clone.style.width = `${availableWidth}px`;
       heading.parentElement?.appendChild(clone);
 
-      const measured = quotes.map((quote) => {
-        clone.textContent = quote.text;
-        return { quote, width: clone.getBoundingClientRect().width };
-      });
+      // Actually renders each quote wrapped at a candidate font size and reads
+      // its real height — a word-wrapped paragraph doesn't pack to a clean
+      // width*lines budget, so this is measured directly rather than estimated.
+      const fitsWithinMaxLines = (fontSizePx: number) => {
+        clone.style.fontSize = `${fontSizePx}px`;
+        const maxHeight = fontSizePx * LINE_HEIGHT_EM * MAX_LINES + 1;
+        return quotes.every((quote) => {
+          clone.textContent = quote.text;
+          return clone.getBoundingClientRect().height <= maxHeight;
+        });
+      };
+
+      let fontSize = baseFontSize;
+      if (!fitsWithinMaxLines(baseFontSize)) {
+        let lo = MIN_FONT_SIZE_PX;
+        let hi = baseFontSize;
+        for (let i = 0; i < 14; i++) {
+          const mid = (lo + hi) / 2;
+          if (fitsWithinMaxLines(mid)) lo = mid;
+          else hi = mid;
+        }
+        fontSize = lo;
+      }
       clone.remove();
 
-      const fits = measured.filter(
-        ({ width }) => width * (MIN_FONT_SIZE_PX / baseFontSize) <= availableWidth,
+      fontSize = Math.max(MIN_FONT_SIZE_PX, fontSize * FIT_SAFETY_MARGIN);
+      const authorFontSize = Math.max(
+        MIN_AUTHOR_FONT_SIZE_PX,
+        Math.min(baseAuthorFontSize, baseAuthorFontSize * (fontSize / baseFontSize)),
       );
-      const survivors = fits.length > 0 ? fits : measured;
 
-      const widest = Math.max(...survivors.map(({ width }) => width));
-      const scale = widest > availableWidth ? (availableWidth / widest) * FIT_SAFETY_MARGIN : 1;
-      const fontSize = Math.max(MIN_FONT_SIZE_PX, baseFontSize * scale);
-      const authorFontSize = Math.max(MIN_AUTHOR_FONT_SIZE_PX, baseAuthorFontSize * scale);
-
-      const next = survivors.map(({ quote }) => ({ ...quote, fontSize, authorFontSize }));
-
-      setSizedQuotes(next);
-      setIndex((current) => (current >= next.length ? 0 : current));
+      setSizedQuotes(quotes.map((quote) => ({ ...quote, fontSize, authorFontSize })));
     };
 
     fit();
@@ -143,11 +163,17 @@ export function QuoteTypewriter({ quotes }: QuoteTypewriterProps) {
             wrap="balance"
             variant="display-strong-l"
             style={{
-              whiteSpace: "nowrap",
               fontSize: current.fontSize ? `${current.fontSize}px` : undefined,
               fontFamily: quoteFont.style.fontFamily,
               fontStyle: "italic",
               fontWeight: 600,
+              lineHeight: LINE_HEIGHT_EM,
+              minHeight: `${RESERVED_LINES * LINE_HEIGHT_EM}em`,
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              alignItems: "center",
             }}
           >
             {displayText}

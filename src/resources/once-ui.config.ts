@@ -102,7 +102,7 @@ const dataStyle: DataStyleConfig = {
 
 const effects: EffectsConfig = {
   mask: {
-    cursor: true,
+    cursor: false,
     x: 50,
     y: 0,
     radius: 15,
