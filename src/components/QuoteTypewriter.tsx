@@ -176,9 +176,23 @@ export function QuoteTypewriter({ quotes }: QuoteTypewriterProps) {
               width: "100%",
             }}
           >
-            <span className={reducedMotion.current ? undefined : styles.typedText}>
-              {displayText}
-            </span>
+            {reducedMotion.current ? (
+              displayText
+            ) : (
+              <>
+                <span className={styles.typedText}>{displayText}</span>
+                {/*
+                  The not-yet-typed remainder stays in the DOM (just invisible) so
+                  text-wrap:balance keeps wrapping and centering each line against
+                  the quote's full, final text throughout — otherwise a line still
+                  being typed would re-center around its own shorter, growing width
+                  and visibly drift as each character lands.
+                */}
+                <span style={{ visibility: "hidden" }} aria-hidden="true">
+                  {current.text.slice(length)}
+                </span>
+              </>
+            )}
           </Heading>
         </RevealFx>
       </Column>
