@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Cormorant_Garamond } from "next/font/google";
 import { Column, Heading, RevealFx, Text } from "@once-ui-system/core";
 import styles from "./QuoteTypewriter.module.scss";
@@ -38,6 +38,73 @@ const FIT_SAFETY_MARGIN = 0.97;
 
 interface QuoteTypewriterProps {
   quotes: Quote[];
+}
+
+// Splits `text` on hyphens, keeping the hyphen characters, and marks how much
+// of each piece has been "typed" so far. Hyphens render upright — in this
+// italic face a slanted hyphen reads as a stray diagonal stroke rather than a
+// dash — while everything else keeps the surrounding italic style. The
+// not-yet-typed remainder of each piece stays in the DOM (just invisible)
+// rather than omitted, so text-wrap:balance always wraps and centers each
+// line against the quote's full, final text: a line still being typed would
+// otherwise re-center around its own shorter, growing width and visibly
+// drift as each character lands. The blinking cursor (a border) attaches to
+// whichever piece the typed length currently ends within.
+function renderTypedQuote(text: string, revealedLength: number) {
+  const pieces = text.split(/(-)/);
+  const nodes: ReactNode[] = [];
+  let pos = 0;
+  let cursorPlaced = false;
+
+  pieces.forEach((piece, i) => {
+    const start = pos;
+    const end = pos + piece.length;
+    pos = end;
+    if (!piece) return;
+
+    const revealedEnd = Math.max(start, Math.min(end, revealedLength));
+    const revealedPart = text.slice(start, revealedEnd);
+    const hiddenPart = text.slice(revealedEnd, end);
+    const placeCursorHere = !cursorPlaced && revealedLength <= end;
+    if (placeCursorHere) cursorPlaced = true;
+
+    const hyphenStyle = piece === "-" ? { fontStyle: "normal" as const } : undefined;
+
+    if (revealedPart || placeCursorHere) {
+      nodes.push(
+        <span
+          key={`r${i}`}
+          className={placeCursorHere ? styles.typedText : undefined}
+          style={hyphenStyle}
+        >
+          {revealedPart}
+        </span>,
+      );
+    }
+    if (hiddenPart) {
+      nodes.push(
+        <span key={`h${i}`} style={{ visibility: "hidden", ...hyphenStyle }} aria-hidden="true">
+          {hiddenPart}
+        </span>,
+      );
+    }
+  });
+
+  return nodes;
+}
+
+// Same upright-hyphen treatment for the static (prefers-reduced-motion) case,
+// where the full quote is shown at once with no cursor or reveal animation.
+function renderStaticQuote(text: string) {
+  return text.split(/(-)/).map((piece, i) =>
+    piece === "-" ? (
+      <span key={i} style={{ fontStyle: "normal" }}>
+        -
+      </span>
+    ) : (
+      piece
+    ),
+  );
 }
 
 // Cycles through `quotes` forever, typing each one out letter by letter and
@@ -152,7 +219,6 @@ export function QuoteTypewriter({ quotes }: QuoteTypewriterProps) {
   }, [phase, length, index, sizedQuotes]);
 
   const current = sizedQuotes[index];
-  const displayText = reducedMotion.current ? current.text : current.text.slice(0, length);
   const authorVisible = reducedMotion.current || phase === "holding";
 
   return (
@@ -176,23 +242,9 @@ export function QuoteTypewriter({ quotes }: QuoteTypewriterProps) {
               width: "100%",
             }}
           >
-            {reducedMotion.current ? (
-              displayText
-            ) : (
-              <>
-                <span className={styles.typedText}>{displayText}</span>
-                {/*
-                  The not-yet-typed remainder stays in the DOM (just invisible) so
-                  text-wrap:balance keeps wrapping and centering each line against
-                  the quote's full, final text throughout — otherwise a line still
-                  being typed would re-center around its own shorter, growing width
-                  and visibly drift as each character lands.
-                */}
-                <span style={{ visibility: "hidden" }} aria-hidden="true">
-                  {current.text.slice(length)}
-                </span>
-              </>
-            )}
+            {reducedMotion.current
+              ? renderStaticQuote(current.text)
+              : renderTypedQuote(current.text, length)}
           </Heading>
         </RevealFx>
       </Column>
