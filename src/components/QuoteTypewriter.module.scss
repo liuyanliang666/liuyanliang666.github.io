@@ -1,10 +1,10 @@
-.cursor {
-  display: inline-block;
-  width: 0.06em;
-  margin-left: 0.1em;
-  height: 0.9em;
-  background: currentColor;
-  vertical-align: -0.1em;
+// A border-right on the text itself, rather than a separate trailing element,
+// so the cursor renders on the last wrapped line's true right edge and can
+// never break away onto a line of its own. The border's color blinks — not
+// the element's opacity — so the text itself stays fully visible throughout.
+.typedText {
+  border-right: 0.06em solid currentColor;
+  padding-right: 0.05em;
   animation: blink 1s step-end infinite;
 }
 
@@ -15,16 +15,16 @@
 @keyframes blink {
   0%,
   50% {
-    opacity: 1;
+    border-right-color: currentColor;
   }
   50.01%,
   100% {
-    opacity: 0;
+    border-right-color: transparent;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cursor {
+  .typedText {
     animation: none;
   }
 }

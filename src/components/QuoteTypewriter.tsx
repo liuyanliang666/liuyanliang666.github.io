@@ -168,16 +168,17 @@ export function QuoteTypewriter({ quotes }: QuoteTypewriterProps) {
               fontStyle: "italic",
               fontWeight: 600,
               lineHeight: LINE_HEIGHT_EM,
+              // A block element's content starts at its top by default, so
+              // reserving extra height here already anchors text to the top —
+              // no flex/centering needed, which also keeps the cursor span
+              // (a border on this text) a genuinely inline, per-line element.
               minHeight: `${RESERVED_LINES * LINE_HEIGHT_EM}em`,
               width: "100%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-start",
-              alignItems: "center",
             }}
           >
-            {displayText}
-            <span className={styles.cursor} aria-hidden="true" />
+            <span className={reducedMotion.current ? undefined : styles.typedText}>
+              {displayText}
+            </span>
           </Heading>
         </RevealFx>
       </Column>
