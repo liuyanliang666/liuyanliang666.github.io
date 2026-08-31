@@ -5,6 +5,10 @@
 .typedText {
   border-right: 0.06em solid currentColor;
   padding-right: 0.05em;
+  // Keep the cursor visible without letting its border/padding participate in
+  // line centering. Otherwise the first line shifts by half the cursor width
+  // when the cursor wraps onto the second line.
+  margin-right: -0.11em;
   animation: blink 1s step-end infinite;
 }
 
