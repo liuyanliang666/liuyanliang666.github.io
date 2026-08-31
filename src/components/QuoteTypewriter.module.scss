@@ -1,15 +1,23 @@
-// A border-right on the text itself, rather than a separate trailing element,
-// so the cursor renders on the last wrapped line's true right edge and can
-// never break away onto a line of its own. The border's color blinks — not
-// the element's opacity — so the text itself stays fully visible throughout.
-.typedText {
-  border-right: 0.06em solid currentColor;
-  padding-right: 0.05em;
-  // Keep the cursor visible without letting its border/padding participate in
-  // line centering. Otherwise the first line shifts by half the cursor width
-  // when the cursor wraps onto the second line.
-  margin-right: -0.11em;
+// The cursor is painted outside the inline formatting flow, so moving it from
+// character to character cannot change line width or centering.
+.cursorAnchor {
+  position: relative;
+}
+
+.cursorAnchor::after {
+  position: absolute;
+  top: 0.08em;
+  right: -0.08em;
+  width: 0.06em;
+  height: 0.9em;
+  content: "";
+  background-color: currentColor;
   animation: blink 1s step-end infinite;
+}
+
+.cursorOrigin {
+  display: inline-block;
+  width: 0;
 }
 
 .author {
@@ -19,16 +27,16 @@
 @keyframes blink {
   0%,
   50% {
-    border-right-color: currentColor;
+    background-color: currentColor;
   }
   50.01%,
   100% {
-    border-right-color: transparent;
+    background-color: transparent;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .typedText {
+  .cursorAnchor::after {
     animation: none;
   }
 }

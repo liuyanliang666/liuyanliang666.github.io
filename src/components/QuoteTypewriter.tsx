@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Cormorant_Garamond } from "next/font/google";
 import { Column, Heading, RevealFx, Text } from "@once-ui-system/core";
 import styles from "./QuoteTypewriter.module.scss";
@@ -40,57 +40,40 @@ interface QuoteTypewriterProps {
   quotes: Quote[];
 }
 
-// Splits `text` on hyphens, keeping the hyphen characters, and marks how much
-// of each piece has been "typed" so far. Hyphens render upright — in this
-// italic face a slanted hyphen reads as a stray diagonal stroke rather than a
-// dash — while everything else keeps the surrounding italic style. The
-// not-yet-typed remainder of each piece stays in the DOM (just invisible)
-// rather than omitted, so text-wrap:balance always wraps and centers each
-// line against the quote's full, final text: a line still being typed would
-// otherwise re-center around its own shorter, growing width and visibly
-// drift as each character lands. The blinking cursor (a border) attaches to
-// whichever piece the typed length currently ends within.
+// Every character keeps a permanent DOM node. Typing only changes visibility,
+// so the browser never has to reshape the sentence or rebalance its lines as
+// the reveal point moves. This is important for the italic serif: splitting a
+// word into a growing visible span and a shrinking hidden span subtly changes
+// kerning at their boundary and makes a centered line jitter by subpixels.
+// The cursor is absolutely painted from the last visible character and never
+// contributes width to the line. Hyphens stay upright for legibility.
 function renderTypedQuote(text: string, revealedLength: number) {
-  const pieces = text.split(/(-)/);
-  const nodes: ReactNode[] = [];
-  let pos = 0;
-  let cursorPlaced = false;
+  return (
+    <>
+      <span
+        className={`${styles.cursorOrigin} ${revealedLength === 0 ? styles.cursorAnchor : ""}`}
+        aria-hidden="true"
+      />
+      {Array.from(text).map((character, index) => {
+        const revealed = index < revealedLength;
+        const cursorHere = revealed && index === revealedLength - 1;
 
-  pieces.forEach((piece, i) => {
-    const start = pos;
-    const end = pos + piece.length;
-    pos = end;
-    if (!piece) return;
-
-    const revealedEnd = Math.max(start, Math.min(end, revealedLength));
-    const revealedPart = text.slice(start, revealedEnd);
-    const hiddenPart = text.slice(revealedEnd, end);
-    const placeCursorHere = !cursorPlaced && revealedLength <= end;
-    if (placeCursorHere) cursorPlaced = true;
-
-    const hyphenStyle = piece === "-" ? { fontStyle: "normal" as const } : undefined;
-
-    if (revealedPart || placeCursorHere) {
-      nodes.push(
-        <span
-          key={`r${i}`}
-          className={placeCursorHere ? styles.typedText : undefined}
-          style={hyphenStyle}
-        >
-          {revealedPart}
-        </span>,
-      );
-    }
-    if (hiddenPart) {
-      nodes.push(
-        <span key={`h${i}`} style={{ visibility: "hidden", ...hyphenStyle }} aria-hidden="true">
-          {hiddenPart}
-        </span>,
-      );
-    }
-  });
-
-  return nodes;
+        return (
+          <span
+            key={index}
+            className={cursorHere ? styles.cursorAnchor : undefined}
+            style={{
+              visibility: revealed ? "visible" : "hidden",
+              fontStyle: character === "-" ? "normal" : undefined,
+            }}
+            aria-hidden="true"
+          >
+            {character}
+          </span>
+        );
+      })}
+    </>
+  );
 }
 
 // Same upright-hyphen treatment for the static (prefers-reduced-motion) case,
@@ -226,6 +209,7 @@ export function QuoteTypewriter({ quotes }: QuoteTypewriterProps) {
       <Column ref={headingWrapRef} maxWidth="m" horizontal="center" align="center">
         <RevealFx translateY="4" fillWidth horizontal="center" paddingBottom="16">
           <Heading
+            aria-label={current.text}
             wrap="balance"
             variant="display-strong-l"
             style={{
@@ -233,6 +217,11 @@ export function QuoteTypewriter({ quotes }: QuoteTypewriterProps) {
               fontFamily: quoteFont.style.fontFamily,
               fontStyle: "italic",
               fontWeight: 600,
+              // Character nodes make shaping boundaries permanent; matching
+              // the measurement clone with kerning/ligatures disabled keeps
+              // its fitted line count identical to the rendered quote.
+              fontKerning: "none",
+              fontVariantLigatures: "none",
               lineHeight: LINE_HEIGHT_EM,
               // A block element's content starts at its top by default, so
               // reserving extra height here already anchors text to the top —
