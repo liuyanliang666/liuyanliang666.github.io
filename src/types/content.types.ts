@@ -174,8 +174,12 @@ export interface About extends BasePageConfig {
     institutions: Array<{
       /** Institution name */
       name: string;
+      /** Enrollment period, e.g. "2024 - Present" */
+      timeframe: string;
       /** Description of studies */
       description: React.ReactNode;
+      /** Path to the institution's emblem/logo image */
+      logo?: string;
     }>;
   };
   /** Publications section */

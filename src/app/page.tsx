@@ -3,6 +3,7 @@ import { home, about, person, baseURL, heroQuotes } from "@/resources";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 import { QuoteTypewriter } from "@/components/QuoteTypewriter";
 import { AboutSection } from "@/components/sections/AboutSection";
+import { EducationSection } from "@/components/sections/EducationSection";
 import { ProjectsSection } from "@/components/sections/ProjectsSection";
 import { PublicationsSection } from "@/components/sections/PublicationsSection";
 import { ScrollToHash } from "@/components/ScrollToHash";
@@ -68,6 +69,17 @@ export default function Home() {
       <RevealOnScroll>
         <AboutSection />
       </RevealOnScroll>
+
+      {about.studies.display && (
+        <>
+          <Row fillWidth horizontal="center" paddingY="l">
+            <Line maxWidth={48} background="neutral-alpha-medium" />
+          </Row>
+          <RevealOnScroll>
+            <EducationSection />
+          </RevealOnScroll>
+        </>
+      )}
 
       <Row fillWidth horizontal="center" paddingY="l">
         <Line maxWidth={48} background="neutral-alpha-medium" />

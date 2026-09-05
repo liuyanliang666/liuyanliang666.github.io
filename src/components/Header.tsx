@@ -48,6 +48,9 @@ export default TimeDisplay;
 // Order here must match the order the sections appear in app/page.tsx.
 const sections: Array<{ id: string; label: string; icon: IconName }> = [
   { id: "about", label: about.label, icon: "person" },
+  ...(about.studies.display
+    ? [{ id: "education", label: about.studies.title, icon: "book" as IconName }]
+    : []),
   { id: "projects", label: work.label, icon: "grid" },
   ...(about.publications.display
     ? [{ id: "publications", label: about.publications.title, icon: "document" as IconName }]

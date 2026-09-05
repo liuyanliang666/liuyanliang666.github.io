@@ -130,24 +130,6 @@ export function AboutSection() {
             </>
           )}
 
-          {about.studies.display && (
-            <>
-              <Heading as="h3" variant="display-strong-xs" marginBottom="m">
-                {about.studies.title}
-              </Heading>
-              <Column fillWidth gap="l" marginBottom="40">
-                {about.studies.institutions.map((institution, index) => (
-                  <Column key={`${institution.name}-${index}`} fillWidth gap="4">
-                    <Text variant="heading-strong-l">{institution.name}</Text>
-                    <Text variant="heading-default-xs" onBackground="neutral-weak">
-                      {institution.description}
-                    </Text>
-                  </Column>
-                ))}
-              </Column>
-            </>
-          )}
-
           {about.technical.display && (
             <>
               <Heading as="h3" variant="display-strong-xs" marginBottom="m">

@@ -129,12 +129,14 @@ const about: About = {
     ],
   },
   studies: {
-    display: false, // flip to true once you fill in your school
+    display: true,
     title: "Education",
     institutions: [
       {
-        name: "Your university",
-        description: <>B.S. in Computer Science, expected 2027.</>,
+        name: "East China Normal University",
+        timeframe: "2024 - Present",
+        description: <>School of Computer Science and Technology, B.S. in Computer Science.</>,
+        logo: "/images/brand/ecnu-emblem.svg",
       },
     ],
   },
