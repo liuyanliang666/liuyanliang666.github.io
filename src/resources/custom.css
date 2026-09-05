@@ -73,3 +73,8 @@
 #publications {
   scroll-margin-top: 6rem;
 }
+
+/* Warm, eye-friendly page canvas instead of stark white (Anthropic's "ivory-light"). */
+[data-theme="light"] {
+  --page-background: #faf9f5;
+}
