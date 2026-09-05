@@ -51,7 +51,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         </SmartLink>
       )}
       <Column fillWidth gap="8" padding="20">
-        <Flex fillWidth horizontal="space-between" vertical="start" gap="12">
+        <Flex fillWidth horizontal="between" vertical="start" gap="12">
           {title && (
             <SmartLink href={href} unstyled>
               <Heading as="h3" wrap="balance" variant="heading-strong-m">
