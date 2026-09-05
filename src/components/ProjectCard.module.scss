@@ -15,10 +15,3 @@
 .card:hover .media {
   transform: scale(1.02);
 }
-
-.summary {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}

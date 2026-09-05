@@ -58,7 +58,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           )}
         </Flex>
         {description?.trim() && (
-          <Text className={styles.summary} variant="body-default-s" onBackground="neutral-weak">
+          <Text variant="body-default-s" onBackground="neutral-weak">
             {description}
           </Text>
         )}

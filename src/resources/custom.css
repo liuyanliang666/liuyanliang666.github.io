@@ -74,11 +74,10 @@
   scroll-margin-top: 6rem;
 }
 
-/* Warm, eye-friendly page canvas instead of stark white — "ivory-light" read
-   as barely-off-white, so stepped up to Anthropic's "manilla" for a page
-   canvas that actually reads as pale yellow. */
+/* Muted stone and charcoal soften the light theme's brightness and contrast. */
 [data-theme="light"] {
-  --page-background: #ebdbbc;
+  --page-background: #e8e6e1;
+  --neutral-on-background-strong: #343630;
 }
 
 /* A classic serif for body copy and headings instead of a grotesque sans,
