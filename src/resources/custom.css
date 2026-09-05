@@ -74,9 +74,11 @@
   scroll-margin-top: 6rem;
 }
 
-/* Warm, eye-friendly page canvas instead of stark white (Anthropic's "ivory-light"). */
+/* Warm, eye-friendly page canvas instead of stark white — "ivory-light" read
+   as barely-off-white, so stepped up to Anthropic's "manilla" for a page
+   canvas that actually reads as pale yellow. */
 [data-theme="light"] {
-  --page-background: #faf9f5;
+  --page-background: #ebdbbc;
 }
 
 /* A classic serif for body copy and headings instead of a grotesque sans,
