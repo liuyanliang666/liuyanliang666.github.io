@@ -1,0 +1,27 @@
+---
+title: "Paper Critical Reading"
+publishedAt: "2026-09-05"
+summary: "A tool for critically reading academic papers — chasing why the problem exists and why the paper's design is what it is, with every claim traceable back to a highlighted passage in the original PDF."
+tag: "Open source"
+link: "https://github.com/liuyanliang666/paper-critical-reading"
+images: ["/images/projects/paper-critical-reading.jpg"]
+team: []
+---
+
+## What it does
+
+Paper Critical Reading pushes past a surface-level summary. Instead of restating a paper's
+abstract, it works through a chain of questions: why the problem exists, why the authors chose
+this design, what insight the contribution rests on, what the experiments actually support, and
+where the limitations are.
+
+## How it works
+
+Every claim can be checked against the source. Ask for a citation and it retrieves the original
+text from the PDF, verifies it, and links out to the exact highlighted passage, down to the line —
+so explanations stay grounded in evidence rather than plausible-sounding paraphrase. Papers can be
+imported from an arXiv link, a raw PDF, or a DOI.
+
+The same reading pipeline is exposed through a chat interface (Claude Desktop, Claude Code, Codex),
+a local web reader with real PDF page images, CLI tools, and an MCP server. Built in Python 3.10+,
+with papers cached locally.
