@@ -78,3 +78,11 @@
 [data-theme="light"] {
   --page-background: #faf9f5;
 }
+
+/* A classic serif for body copy instead of a grotesque sans. Needs !important:
+   next/font's generated variable class carries the same specificity and its
+   load order relative to this file isn't guaranteed (both land in Next's
+   precedence-ordered CSS chunks), so plain cascade order can't be trusted. */
+:root {
+  --font-body: Georgia, "Times New Roman", serif !important;
+}

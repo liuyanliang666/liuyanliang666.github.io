@@ -40,7 +40,6 @@ const protectedRoutes: ProtectedRoutesConfig = {};
 // Import and set font for each variant
 import { Geist } from "next/font/google";
 import { Geist_Mono } from "next/font/google";
-import { Manrope } from "next/font/google";
 
 const heading = Geist({
   variable: "--font-heading",
@@ -48,8 +47,9 @@ const heading = Geist({
   display: "swap",
 });
 
-// A warmer, more characterful grotesque than Geist for body copy.
-const body = Manrope({
+// Actual body typeface is set in custom.css (--font-body override, a Georgia
+// serif stack) — this Geist instance only fills the required config slot.
+const body = Geist({
   variable: "--font-body",
   subsets: ["latin"],
   display: "swap",
