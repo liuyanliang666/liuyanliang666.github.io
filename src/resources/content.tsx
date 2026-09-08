@@ -1,4 +1,4 @@
-import { About, Blog, Gallery, Home, Newsletter, Person, Social, Work } from "@/types";
+import { About, Home, Person, Social, Work } from "@/types";
 
 const person: Person = {
   firstName: "Yanliang",
@@ -10,12 +10,6 @@ const person: Person = {
   location: "Asia/Shanghai", // IANA time zone identifier
   languages: [], // optional: leave empty to hide the language tags
   locale: "en", // BCP 47 language tag for the HTML lang attribute
-};
-
-const newsletter: Newsletter = {
-  display: false,
-  title: <>Subscribe to {person.firstName}'s Newsletter</>,
-  description: <>My weekly newsletter about creativity and engineering</>,
 };
 
 const social: Social = [
@@ -177,15 +171,6 @@ const about: About = {
   },
 };
 
-const blog: Blog = {
-  path: "/blog",
-  label: "Blog",
-  title: `Writing – ${person.name}`,
-  description: `Read what ${person.name} has been up to recently`,
-  // Hidden by default — turn "/blog" on in once-ui.config.ts to show it.
-  // Create new posts by adding a .mdx file to src/app/blog/posts
-};
-
 const work: Work = {
   path: "/work",
   label: "Projects",
@@ -195,13 +180,4 @@ const work: Work = {
   // All projects are listed on the /home and /work routes
 };
 
-const gallery: Gallery = {
-  path: "/gallery",
-  label: "Gallery",
-  title: `Photo gallery – ${person.name}`,
-  description: `A photo collection by ${person.name}`,
-  // Hidden by default — turn "/gallery" on in once-ui.config.ts to show it.
-  images: [],
-};
-
-export { person, social, newsletter, home, about, blog, work, gallery, heroQuotes };
+export { person, social, home, about, work, heroQuotes };
