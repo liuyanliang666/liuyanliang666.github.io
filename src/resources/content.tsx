@@ -104,8 +104,12 @@ const about: About = {
     title: "Introduction",
     description: (
       <>
-        A computer science student interested in open-source software and research. This site
-        collects the projects I've built and the papers I've worked on.
+        Hi there — I'm Yanliang Liu, an undergraduate at the School of Computer Science and
+        Technology, East China Normal University. My main research interest is reinforcement
+        learning. Imitation can only take a model as far as what it was shown; learning from
+        outcomes is what lets it go further, and I think that's where the next real progress will
+        come from. Away from the desk I'm usually on a court or a pitch — football, basketball,
+        table tennis. Same appeal, really: you only get good by playing, losing, and adjusting.
       </>
     ),
   },
