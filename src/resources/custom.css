@@ -89,4 +89,9 @@
 :root {
   --font-body: Georgia, "Times New Roman", serif !important;
   --font-heading: Georgia, "Times New Roman", serif !important;
+
+  /* Once UI ships body copy at a 1.33 line-height, which is display spacing,
+     not reading spacing — a serif at 18px needs closer to 1.6 to stop looking
+     cramped. Applies to every body-variant text on the site. */
+  --line-height-body-multiplier: 1.2;
 }

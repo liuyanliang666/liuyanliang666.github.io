@@ -15,6 +15,10 @@ import styles from "@/components/about/about.module.scss";
 import React from "react";
 
 export function AboutSection() {
+  // Experience and Technical sit below the intro; when both are off, the spacing
+  // that separates them from it is just dead air.
+  const hasSectionsBelowIntro = about.work.display || about.technical.display;
+
   return (
     <Column id="about" fillWidth gap="l">
       <Heading as="h2" variant="display-strong-s">
@@ -27,7 +31,7 @@ export function AboutSection() {
           minWidth="160"
           fitHeight
           gap="m"
-          paddingBottom="l"
+          paddingBottom={hasSectionsBelowIntro ? "l" : "0"}
           horizontal="center"
           s={{ horizontal: "center" }}
         >
@@ -66,9 +70,14 @@ export function AboutSection() {
           )}
         </Column>
 
-        <Column flex={9} maxWidth={40} className={styles.blockAlign}>
+        <Column flex={9} maxWidth={36} className={styles.blockAlign}>
           {about.intro.display && (
-            <Column textVariant="body-default-l" fillWidth gap="m" marginBottom="xl">
+            <Column
+              textVariant="body-default-l"
+              fillWidth
+              gap="m"
+              marginBottom={hasSectionsBelowIntro ? "xl" : "0"}
+            >
               {about.intro.description}
             </Column>
           )}
