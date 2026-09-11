@@ -1,0 +1,34 @@
+---
+title: "Classical Chinese Cycle Translation"
+publishedAt: "2026-09-11"
+summary: "Cycle-consistency training for classical–modern Chinese translation, so a sentence survives the round trip intact."
+link: "https://github.com/liuyanliang666/classical-chinese-cycle-translation"
+images: ["/images/projects/classical-chinese-cycle-translation.jpg"]
+team: []
+---
+
+## What it does
+
+Two generation tasks over Chinese text: bidirectional translation between Classical Chinese and the
+modern vernacular, and rewriting modern prose in Lu Xun's style. The translation half borrows cycle
+consistency from CycleGAN — a sentence is translated, then translated back, and the round trip has
+to land where it started. The goal isn't a higher one-way BLEU; it's that meaning, structure and
+key facts survive both passes, which is exactly where classical–modern translation tends to drop
+information or invent it.
+
+## How it works
+
+Discrete sampling isn't differentiable, so a cycle loss can't be backpropagated through a decoded
+sentence. Instead the first translation's softmax distribution is multiplied by the embedding
+matrix to form a continuous soft-token representation, which is fed to the second pass — the total
+objective is translation loss plus `lambda_cycle` times the round-trip loss.
+
+That weight turns out to matter. At `lambda_cycle=0.1`, BLEU, BERTScore and hallucination rate are
+all at their most stable; pushing it higher makes the round trip more reversible but nudges the
+model toward copy collapse, where it learns to echo the input rather than translate it. Evaluation
+covers round-trip consistency, copy rate, and hallucination of numbers and content characters
+alongside the usual translation metrics.
+
+Built on Randeng-BART-139M for the seq2seq models and a Qwen3-4B LoRA for style transfer, trained
+on the NiuTrans Classical-Modern parallel corpus. The demo runs as a Streamlit front end against a
+FastAPI inference backend on a GPU server.
