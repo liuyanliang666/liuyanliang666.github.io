@@ -104,7 +104,7 @@ const about: About = {
     title: "Introduction",
     description: (
       <>
-        Hi there — I'm Yanliang Liu, an undergraduate at the School of Computer Science and
+        Hi there 👋 — I'm Yanliang Liu, an undergraduate at the School of Computer Science and
         Technology, East China Normal University. My main research interest is reinforcement
         learning. Imitation can only take a model as far as what it was shown; learning from
         outcomes is what lets it go further, and I think that's where the next real progress will
